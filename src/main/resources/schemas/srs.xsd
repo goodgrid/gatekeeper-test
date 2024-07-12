@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="https://poortwachter.notarisid.nl/srs/1.0"
+           targetNamespace="https://poortwachter.notarisid.nl/srs/1.0"
+           elementFormDefault="qualified">
+
+    <xs:element name="RequestHeader">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="requestId" type="xs:string"/>
+                <xs:element name="timestamp" type="xs:dateTime"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="RetrieveReportSummariesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reportType" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="RetrieveReportSummariesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="summaries" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="DownloadReportRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reportId" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="DownloadReportResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reportContent" type="xs:base64Binary"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ConfirmReportRetrievalRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reportId" type="xs:string"/>
+                <xs:element name="status" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ConfirmReportRetrievalResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="confirmationId" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

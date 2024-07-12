@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions targetNamespace="https://poortwachter.notarisid.nl/srs/1.0"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+             xmlns:tns="https://poortwachter.notarisid.nl/srs/1.0"
+             xmlns:gatekeeper="https://poortwachter.notarisid.nl/gatekeeper/1.0"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:wsp="http://www.w3.org/ns/ws-policy"
+             xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+             xmlns:wsu="http://schemas.xmlsoap.org/ws/2004/09/policy">
+
+    <types>
+        <!-- Ensure the schemas are correctly imported -->
+        <xsd:import namespace="https://poortwachter.notarisid.nl/gatekeeper/1.0" schemaLocation="gatekeeper.xsd"/>
+        <xsd:import namespace="https://poortwachter.notarisid.nl/srs/1.0" schemaLocation="srs.xsd"/>
+    </types>
+
+    <!-- Messages -->
+    <message name="RetrieveReportSummariesRequest">
+        <part name="RequestHeader" element="tns:RequestHeader"/>
+        <part name="RetrieveReportSummariesRequest" element="tns:RetrieveReportSummariesRequest"/>
+    </message>
+    <message name="RetrieveReportSummariesResponse">
+        <part name="RetrieveReportSummariesResponse" element="tns:RetrieveReportSummariesResponse"/>
+    </message>
+    <message name="DownloadReportRequest">
+        <part name="RequestHeader" element="tns:RequestHeader"/>
+        <part name="DownloadReportRequest" element="tns:DownloadReportRequest"/>
+    </message>
+    <message name="DownloadReportResponse">
+        <part name="DownloadReportResponse" element="tns:DownloadReportResponse"/>
+    </message>
+    <message name="ConfirmReportRetrievalRequest">
+        <part name="RequestHeader" element="tns:RequestHeader"/>
+        <part name="ConfirmReportRetrievalRequest" element="tns:ConfirmReportRetrievalRequest"/>
+    </message>
+    <message name="ConfirmReportRetrievalResponse">
+        <part name="ConfirmReportRetrievalResponse" element="tns:ConfirmReportRetrievalResponse"/>
+    </message>
+
+    <!-- Faults -->
+    <message name="OperationFailedResponse">
+        <part name="Detail" element="gatekeeper:ErrorMessage"/>
+    </message>
+    <message name="ScanReportNotFoundResponse">
+        <part name="Detail" element="gatekeeper:ErrorMessage"/>
+    </message>
+
+    <!-- PortType -->
+    <portType name="ScanRetrievalServicePortType">
+        <operation name="RetrieveReportSummaries">
+            <input message="tns:RetrieveReportSummariesRequest"/>
+            <output message="tns:RetrieveReportSummariesResponse"/>
+            <fault name="OperationFailedResponse" message="tns:OperationFailedResponse"/>
+        </operation>
+        <operation name="DownloadReport">
+            <input message="tns:DownloadReportRequest"/>
+            <output message="tns:DownloadReportResponse"/>
+            <fault name="OperationFailedResponse" message="tns:OperationFailedResponse"/>
+            <fault name="ScanReportNotFoundResponse" message="tns:ScanReportNotFoundResponse"/>
+        </operation>
+        <operation name="ConfirmReportRetrieval">
+            <input message="tns:ConfirmReportRetrievalRequest"/>
+            <output message="tns:ConfirmReportRetrievalResponse"/>
+            <fault name="OperationFailedResponse" message="tns:OperationFailedResponse"/>
+        </operation>
+    </portType>
+
+    <!-- Binding -->
+    <binding name="ScanRetrievalServiceBinding" type="tns:ScanRetrievalServicePortType">
+        <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="RetrieveReportSummaries">
+            <soap12:operation soapAction="RetrieveReportSummaries" style="document"/>
+            <input>
+                <soap12:body parts="RetrieveReportSummariesRequest" use="literal"/>
+                <soap12:header message="tns:RetrieveReportSummariesRequest" part="RequestHeader" use="literal"/>
+            </input>
+            <output>
+                <soap12:body parts="RetrieveReportSummariesResponse" use="literal"/>
+            </output>
+            <fault name="OperationFailedResponse">
+                <soap12:fault name="OperationFailedResponse" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="DownloadReport">
+            <wsp:PolicyReference URI="#ScanRetrievalServiceBindingPolicy" required="true"/>
+            <soap12:operation soapAction="DownloadReport" style="document"/>
+            <input>
+                <soap12:body parts="DownloadReportRequest" use="literal"/>
+                <soap12:header message="tns:DownloadReportRequest" part="RequestHeader" use="literal"/>
+            </input>
+            <output>
+                <soap12:body parts="DownloadReportResponse" use="literal"/>
+            </output>
+            <fault name="OperationFailedResponse">
+                <soap12:fault name="OperationFailedResponse" use="literal"/>
+            </fault>
+            <fault name="ScanReportNotFoundResponse">
+                <soap12:fault name="ScanReportNotFoundResponse" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="ConfirmReportRetrieval">
+            <soap12:operation soapAction="ConfirmReportRetrieval" style="document"/>
+            <input>
+                <soap12:body parts="ConfirmReportRetrievalRequest" use="literal"/>
+                <soap12:header message="tns:ConfirmReportRetrievalRequest" part="RequestHeader" use="literal"/>
+            </input>
+            <output>
+                <soap12:body parts="ConfirmReportRetrievalResponse" use="literal"/>
+            </output>
+            <fault name="OperationFailedResponse">
+                <soap12:fault name="OperationFailedResponse" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+
+    <!-- Policy -->
+    <wsp:Policy wsu:Id="ScanRetrievalServiceBindingPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <wsaw:UsingAddressing
+                        xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+                        wsp:Optional="true"/>
+                <sp:AsymmetricBinding>
+                    <wsp:Policy>
+                        <sp:RecipientToken>
+                            <wsp:Policy>
+                                <sp:X509Token
+                                        sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                                    <wsp:Policy>
+                                        <sp:WssX509V3Token10/>
+                                        <sp:RequireIssuerSerialReference/>
+                                    </wsp:Policy>
+                                </sp:X509Token>
+                            </wsp:Policy>
+                        </sp:RecipientToken>
+                        <sp:Layout>
+                            <wsp:Policy>
+                                <sp:Lax/>
+                            </wsp:Policy>
+                        </sp:Layout>
+                        <sp:IncludeTimestamp/>
+                        <sp:AlgorithmSuite>
+                            <wsp:Policy>
+                                <sp:Basic256Sha256/>
+                            </wsp:Policy>
+                        </sp:AlgorithmSuite>
+                    </wsp:Policy>
+                </sp:AsymmetricBinding>
+                <sp:SignedParts>
+                    <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+
+    <!-- Service -->
+    <service name="ScanRetrievalService">
+        <port binding="tns:ScanRetrievalServiceBinding" name="ScanRetrievalServicePort">
+            <soap12:address location="https://poortwachter.notarisid.nl/srs/1.0"/>
+        </port>
+    </service>
+</definitions>
