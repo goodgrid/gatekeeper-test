@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:tns="https://poortwachter.notarisid.nl/gatekeeper/1.0"
+           elementFormDefault="qualified"
            targetNamespace="https://poortwachter.notarisid.nl/gatekeeper/1.0"
-           elementFormDefault="qualified">
-
+           xmlns="https://poortwachter.notarisid.nl/gatekeeper/1.0"
+>
     <xs:simpleType name="NonEmptyString">
         <xs:restriction base="xs:string">
             <xs:minLength value="1"/>
@@ -25,20 +25,25 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:element name="ErrorMessage" type="xs:string"/>
+    <xs:simpleType name="ErrorMessage">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
 
     <xs:simpleType name="ProcessingStatus">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="SUCCESS"/>
-            <xs:enumeration value="ERROR"/>
+            <xs:enumeration value="SUCCESS">
+            </xs:enumeration>
+            <xs:enumeration value="ERROR">
+            </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
 
+
     <xs:complexType name="ScanReport">
         <xs:sequence>
-            <xs:element name="Document" type="tns:IdentityDocument"/>
-            <xs:element name="Attachments" type="tns:Attachments"/>
-            <xs:element name="ValidationStatus" type="tns:ValidationStatus"/>
+            <xs:element name="Document" type="IdentityDocument"/>
+            <xs:element name="Attachments" type="Attachments"/>
+            <xs:element name="ValidationStatus" type="ValidationStatus"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -64,31 +69,41 @@
 
     <xs:complexType name="Attachments">
         <xs:sequence>
-            <xs:element name="Attachment" type="tns:Attachment" maxOccurs="unbounded"/>
+            <xs:element name="Attachment" type="Attachment" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="Attachment">
         <xs:sequence>
-            <xs:element name="Data" type="xs:base64Binary"/>
-            <xs:element name="Type" type="tns:AttachmentType"/>
+            <xs:element name="Data"
+                        type='xs:base64Binary'>
+            </xs:element>
+            <xs:element name="Type" type="AttachmentType"/>
         </xs:sequence>
     </xs:complexType>
 
+
     <xs:simpleType name="AttachmentType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="UNKNOWN"/>
-            <xs:enumeration value="PHOTO_WHOLE_DOCUMENT"/>
-            <xs:enumeration value="PHOTO_RFID"/>
-            <xs:enumeration value="PHOTO_VISIBLE"/>
-            <xs:enumeration value="PDF_REPORT"/>
+            <xs:enumeration value="UNKNOWN">
+            </xs:enumeration>
+            <xs:enumeration value="PHOTO_WHOLE_DOCUMENT">
+            </xs:enumeration>
+            <xs:enumeration value="PHOTO_RFID">
+            </xs:enumeration>
+            <xs:enumeration value="PHOTO_VISIBLE">
+            </xs:enumeration>
+            <xs:enumeration value="PDF_REPORT">
+            </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
 
     <xs:simpleType name="ValidationStatus">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="PASSED"/>
-            <xs:enumeration value="NOT_PASSED"/>
+            <xs:enumeration value="PASSED">
+            </xs:enumeration>
+            <xs:enumeration value="NOT_PASSED">
+            </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
 
@@ -98,19 +113,18 @@
 
     <xs:complexType name="ScanReportSummaries">
         <xs:sequence>
-            <xs:element name="ScanReportSummary" type="tns:ScanReportSummary" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="ScanReportSummary" type="ScanReportSummary" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ScanReportSummary">
         <xs:sequence>
-            <xs:element name="ScanReportId" type="tns:ScanReportId"/>
-            <xs:element name="Status" type="tns:ProcessingStatus"/>
+            <xs:element name="ScanReportId" type="ScanReportId"/>
+            <xs:element name="Status" type="ProcessingStatus"/>
             <xs:element name="TimeOfScan" type="xs:dateTime"/>
             <xs:element name="Expiry" type="xs:dateTime"/>
-            <xs:element name="ScannerId" type="tns:ScannerId"/>
-            <xs:element name="IdentificationData" type="tns:IdentificationData" minOccurs="0"/>
+            <xs:element name="ScannerId" type="ScannerId"/>
+            <xs:element name="IdentificationData" type="IdentificationData" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
-
 </xs:schema>

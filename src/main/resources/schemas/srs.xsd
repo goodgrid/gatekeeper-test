@@ -1,65 +1,65 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:tns="https://poortwachter.notarisid.nl/srs/1.0"
+           elementFormDefault="qualified"
            targetNamespace="https://poortwachter.notarisid.nl/srs/1.0"
-           elementFormDefault="qualified">
+           xmlns="https://poortwachter.notarisid.nl/srs/1.0"
+           xmlns:gatekeeper="https://poortwachter.notarisid.nl/gatekeeper/1.0"
+>
+    <xs:import namespace="https://poortwachter.notarisid.nl/gatekeeper/1.0" schemaLocation="gatekeeper.xsd"/>
 
-    <xs:element name="RequestHeader">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="requestId" type="xs:string"/>
-                <xs:element name="timestamp" type="xs:dateTime"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+    <xs:complexType name="RequestHeader">
+    <xs:sequence>
+        <xs:element name="VendorInformation" type="VendorInformation"/>
+        <xs:element name="Requester" type="Requester"/>
+    </xs:sequence>
+</xs:complexType>
 
-    <xs:element name="RetrieveReportSummariesRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="reportType" type="xs:string"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+<xs:complexType name="VendorInformation">
+<xs:sequence>
+    <xs:element name="VendorCode" type="gatekeeper:NonEmptyString"/>
+    <xs:element name="VendorVersion" type="gatekeeper:NonEmptyString"/>
+</xs:sequence>
+</xs:complexType>
 
-    <xs:element name="RetrieveReportSummariesResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="summaries" type="xs:string"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+<xs:complexType name="Requester">
+<xs:sequence>
+    <xs:element name="Username" type="gatekeeper:NonEmptyString"/>
+</xs:sequence>
+</xs:complexType>
 
-    <xs:element name="DownloadReportRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="reportId" type="xs:string"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+<xs:complexType name="RetrieveReportSummariesRequest">
+</xs:complexType>
 
-    <xs:element name="DownloadReportResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="reportContent" type="xs:base64Binary"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+<xs:complexType name="RetrieveReportSummariesResponse">
+<xs:sequence>
+    <xs:element name="CreatedAt" type="xs:dateTime"/>
+    <xs:element name="ScanReportSummaries" type="gatekeeper:ScanReportSummaries"/>
+</xs:sequence>
+</xs:complexType>
 
-    <xs:element name="ConfirmReportRetrievalRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="reportId" type="xs:string"/>
-                <xs:element name="status" type="xs:string"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+<xs:complexType name="DownloadReportRequest">
+<xs:sequence>
+    <xs:element name="Id" type="gatekeeper:ScanReportId"/>
+</xs:sequence>
+</xs:complexType>
 
-    <xs:element name="ConfirmReportRetrievalResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="confirmationId" type="xs:string"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+<xs:complexType name="DownloadReportResponse">
+<xs:sequence>
+    <xs:element name="Id" type="gatekeeper:ScanReportId"/>
+    <xs:element name="ScanReport" type="gatekeeper:ScanReport"/>
+</xs:sequence>
+</xs:complexType>
 
+<xs:complexType name="ConfirmReportRetrievalRequest">
+<xs:sequence>
+    <xs:element name="Id" type="gatekeeper:ScanReportId"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ConfirmReportRetrievalResponse">
+<xs:sequence>
+    <xs:element name="Id" type="gatekeeper:ScanReportId" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
 </xs:schema>
